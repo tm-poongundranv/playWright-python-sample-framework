@@ -1,0 +1,7 @@
+{
+  "qa": {
+    "base_url": "https://www.playground.testingmavens.tools/login",
+    "username": "playground",
+    "password": "playground@TM"
+  }
+}
