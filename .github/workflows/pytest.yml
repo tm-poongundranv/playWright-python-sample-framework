@@ -24,29 +24,11 @@ jobs:
       with:
         python-version: '3.12'
 
-    - name: Install Java
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openjdk-8-jdk
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Install Playwright Browsers
-      run: |
-        npm install -g playwright
-        npx playwright install
-
-    - name: Install Xvfb
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb
-
-    - name: Run tests with Xvfb
-      run: |
-        xvfb-run -a pytest --alluredir=allure-results
+        pip install pytest pytest-playwright allure-pytest
+        playwright install
 
     - name: Download Allure Commandline
       run: |
