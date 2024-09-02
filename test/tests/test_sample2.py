@@ -3,7 +3,7 @@ import pytest
 from base_test import BaseTest
 
 
-class TestGoogle:
+class TestGoogle2:
     @allure.title("")
     @allure.description("")
     @allure.severity(allure.severity_level.MINOR)
