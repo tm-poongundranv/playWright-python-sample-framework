@@ -24,20 +24,14 @@ jobs:
       with:
         python-version: '3.12'
 
-    - name: Install Java
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openjdk-8-jdk
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-#    - name: Install Playwright Browsers
-#      run: |
-#        npm install -g playwright
-#        npx playwright install
+    - name: Install Playwright Browsers
+      run: |
+        playwright install
 
     - name: Clean up previous Allure report
       run: |
