@@ -31,6 +31,7 @@ jobs:
 
     - name: Install Playwright Browsers
       run: |
+        npm install -g playwright
         npx playwright install
 
     - name: Install Allure Commandline

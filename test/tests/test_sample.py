@@ -22,4 +22,4 @@ class TestGoogle:
     @pytest.mark.search
     def test_yahoo(self, page):
         page.goto('https://in.search.yahoo.com/')
-        assert page.title() == 'Yaho Search - Web Search'
+        assert page.title() == 'Yahoo Search - Web Search'
