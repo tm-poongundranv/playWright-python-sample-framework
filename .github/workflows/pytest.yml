@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to run tests on'
+        description: 'Branch name to run tests on'
         required: true
         default: 'main'
         type: string
@@ -14,26 +14,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.branch }}
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-playwright allure-pytest pytest-html pytest-soft-asserts
-          playwright install
+    - name: Install Java
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-8-jdk
 
-      - name: Clean up previous Allure report
-        run: |
-          rm -rf allure-results allure-report
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run tests
-        run: |
-          pytest
+#    - name: Install Playwright Browsers
+#      run: |
+#        npm install -g playwright
+#        npx playwright install
+
+    - name: Clean up previous Allure report
+      run: |
+        rm -rf allure-results allure-report
+
+    - name: Run tests
+      run: |
+        pytest
