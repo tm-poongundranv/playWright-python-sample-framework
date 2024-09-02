@@ -43,15 +43,15 @@ jobs:
       run: |
         xvfb-run -a pytest --alluredir=allure-results
 
-    - name: Install Allure Commandline
+    - name: Download Allure Commandline
       run: |
         wget https://github.com/allure-framework/allure2/releases/download/2.17.0/allure-2.17.0.tgz
         tar -xzf allure-2.17.0.tgz
         sudo mv allure-2.17.0/bin/allure /usr/local/bin/allure
 
-    - name: Run tests
+    - name: Verify Allure Installation
       run: |
-        pytest --alluredir=allure-results
+        allure --version
 
     - name: Generate Allure report
       run: |
