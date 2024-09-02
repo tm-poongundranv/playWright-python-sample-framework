@@ -27,7 +27,7 @@ jobs:
     - name: Install Java
       run: |
         sudo apt-get update
-        sudo apt-get install -y openjdk-11-jdk
+        sudo apt-get install -y openjdk-8-jdk
 
     - name: Install dependencies
       run: |
