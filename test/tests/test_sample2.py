@@ -10,7 +10,7 @@ class TestGoogle:
     @allure.label('owner', 'Automation')
     @allure.testcase("")
     @pytest.mark.search
-    def test_google(self, page):
+    def test_google2(self, page):
         page.goto('https://google.com')
         assert page.title() == 'Google'
 
@@ -20,6 +20,6 @@ class TestGoogle:
     @allure.label('owner', 'Automation')
     @allure.testcase("")
     @pytest.mark.search
-    def test_yahoo(self, page):
+    def test_yahoo2(self, page):
         page.goto('https://in.search.yahoo.com/')
-        assert page.title() == 'Yaho Search - Web Search'
+        assert page.title() == 'Yahoo Search - Web Search'

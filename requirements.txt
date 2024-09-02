@@ -1,0 +1,7 @@
+allure-pytest==2.13.5
+allure-python-commons==2.13.5
+playwright==1.46.0
+pytest-html==4.1.1
+pytest-playwright==0.5.1
+pytest-soft-assertions==0.1.2
+requests==2.32.3
