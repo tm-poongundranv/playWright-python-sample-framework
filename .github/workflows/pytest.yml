@@ -33,6 +33,10 @@ jobs:
       run: |
         playwright install
 
+#    - name: Install Allure Commandline
+#      run: |
+#        pip install allure-commandline
+
     - name: Clean up previous Allure and HTML reports
       run: |
         rm -rf test/tests/artifacts/allure_report test/tests/artifacts/html/html_report.html
@@ -41,11 +45,15 @@ jobs:
       run: |
         pytest
 
+    - name: Generate Allure Report
+      run: |
+        allure generate test/tests/artifacts/allure_report --clean -o test/tests/artifacts/html
+
     - name: Upload Allure Report
       uses: actions/upload-artifact@v3
       with:
         name: allure-report
-        path: test/tests/artifacts/allure_report
+        path: test/tests/artifacts/html
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v3
