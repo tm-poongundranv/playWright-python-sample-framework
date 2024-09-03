@@ -41,8 +41,18 @@ jobs:
       run: |
         pytest
 
+    - name: Generate Allure Report
+      run: |
+        allure generate test/tests/artifacts/allure_report --clean -o test/tests/artifacts/allure_report
+
     - name: Upload Allure Report
       uses: actions/upload-artifact@v3
       with:
         name: allure-report
-        path: test/tests/artifacts/combine_allure_report/index.html
+        path: test/tests/artifacts/combine_allure_report
+
+    - name: Upload HTML Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: html-report
+        path: test/tests/artifacts/html
