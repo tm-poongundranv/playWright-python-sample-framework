@@ -31,6 +31,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install pytest-xdist
 
     - name: Install Playwright Browsers
       run: |
@@ -47,7 +48,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir
+        pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n 2
       continue-on-error: true
 
     - name: Upload Raw Allure Report
