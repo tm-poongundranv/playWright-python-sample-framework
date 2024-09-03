@@ -14,7 +14,7 @@ on:
         default: '1'
         type: string
       group:
-        description: 'Group: (e.g., smoke)'
+        description: 'Group: (e.g., smoke, smoke and ui, api or ui)'
         required: false
         default: ''
         type: string
