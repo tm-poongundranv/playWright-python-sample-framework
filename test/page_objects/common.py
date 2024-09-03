@@ -3,6 +3,7 @@ import allure
 from playwright.sync_api import Page, Locator, expect
 
 
+
 class Actions:
     @staticmethod
     def click_on(locator: Locator, name: str):
