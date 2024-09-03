@@ -17,22 +17,18 @@ class TestPlaygroundApp:
     @allure.testcase("TC001")
     @pytest.mark.search
     def test_filter_product(self, page:Page):
-        # Initialize the LoginPage, Common , ShopPage
-        common_obj = Common(page)
-        login_page_obj = LoginPage(page)
-        shop_obj = ShopPage(page)
         # Go to the Application
         page.goto('https://www.playground.testingmavens.tools/')
 
         # Log in using methods from LoginPage
-        login_page_obj.enter_user_name("playground")
-        login_page_obj.enter_password("playground@TM")
-        login_page_obj.click_sign_in_button()
+        LoginPage.enter_user_name(page, "playground")
+        LoginPage.enter_password(page, "playground@TM")
+        LoginPage.click_sign_in_button(page)
 
         # Open the Shop Page
-        common_obj.open_shop_page()
-        shop_obj.click_shop_by_brand()
-        shop_obj.filter_by_brand("Samsung")
+        Common.open_shop_page(page)
+        ShopPage.click_shop_by_brand(page)
+        ShopPage.filter_by_brand(page, "Samsung")
 
 
 
@@ -43,26 +39,20 @@ class TestPlaygroundApp:
     @allure.testcase("TC002")
     @pytest.mark.search
     def test_component_page(self,page: Page):
-        # Initialize the LoginPage
-        login_page_obj = LoginPage(page)
-
         # Go to the main page
         page.goto('https://www.playground.testingmavens.tools/')
 
-        # Log in using methods from LoginPage
-        login_page_obj.enter_user_name("playground")
-        login_page_obj.enter_password("playground@TM")
-        login_page_obj.click_sign_in_button()
+        # Log in using static methods from LoginPage
+        LoginPage.enter_user_name(page, "playground")
+        LoginPage.enter_password(page, "playground@TM")
+        LoginPage.click_sign_in_button(page)
 
-        # Open the Components Page
-        common_obj = Common(page)
-        common_obj.open_components_page()
+        # Open the Components Page using Common's static method
+        Common.open_components_page(page)
 
         # Ensure that the Components page is loaded
         page.locator('text=Pop Window Component').wait_for()
-        components_obj = ComponentsPage(page)
 
-        # Click on the tile that opens the pop-up (assuming the selector for the tile)
-        components_obj.open_pop_window_and_verify()
-
+        # Use static methods from ComponentsPage
+        ComponentsPage.open_pop_window_and_verify(page)
 
