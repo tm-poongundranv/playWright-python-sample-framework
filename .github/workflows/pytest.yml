@@ -61,7 +61,7 @@ jobs:
         if [ -z "${{ github.event.inputs.group }}" ]; then
           pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n ${{ github.event.inputs.node }}
         else
-          pytest -m ${{ github.event.inputs.group }} -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n ${{ github.event.inputs.node }}
+          pytest -m "${{ github.event.inputs.group }}" -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n ${{ github.event.inputs.node }}
         fi
       continue-on-error: true
 
