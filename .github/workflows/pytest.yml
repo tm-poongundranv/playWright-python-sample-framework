@@ -54,6 +54,12 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: allure-report
+        path: test/tests/artifacts/allure_report
+
+    - name: Upload Allure Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: combine-allure-report
         path: test/tests/artifacts/combine_allure_report
 
     - name: Upload HTML Report
