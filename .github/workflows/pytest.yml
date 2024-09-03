@@ -8,6 +8,11 @@ on:
         required: true
         default: 'main'
         type: string
+      node:
+        description: 'nodes'
+        required: true
+        default: '1'
+        type: string
 
 jobs:
   test:
@@ -48,7 +53,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n 2
+        pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n ${{ github.event.inputs.node }}
       continue-on-error: true
 
     - name: Upload Raw Allure Report
