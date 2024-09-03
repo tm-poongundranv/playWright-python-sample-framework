@@ -8,6 +8,23 @@ on:
         required: true
         default: 'main'
         type: string
+      tags:
+        description: |
+          Comma-separated list of tags to filter tests by.
+          Example: `smoke,regression`
+          Use this to run tests that are tagged with specific keywords.
+        required: false
+        default: ''
+        type: string
+      test_target:
+        description: |
+          Specify the test class or method to run.
+          - To run all tests in a class, use: `ClassName`
+          - To run a specific method within a class, use: `ClassName::method_name`
+          Example: `MyTestClass` or `MyTestClass::test_specific_method`
+        required: false
+        default: ''
+        type: string
 
 jobs:
   test:
@@ -34,7 +51,7 @@ jobs:
 
     - name: Install Playwright Browsers
       run: |
-        playwright install
+        npx playwright install
 
     - name: Install Allure Commandline
       run: |
@@ -47,7 +64,24 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir
+        tags="${{ github.event.inputs.tags }}"
+        test_target="${{ github.event.inputs.test_target }}"
+        
+        # Base pytest command
+        pytest_cmd="pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir"
+
+        # Add tags if specified
+        if [ -n "$tags" ]; then
+          pytest_cmd="$pytest_cmd -m '$tags'"
+        fi
+
+        # Add test target if specified
+        if [ -n "$test_target" ]; then
+          pytest_cmd="$pytest_cmd $test_target"
+        fi
+
+        # Execute the pytest command
+        eval $pytest_cmd
       continue-on-error: true
 
     - name: Upload Raw Allure Report
