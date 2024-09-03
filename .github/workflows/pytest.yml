@@ -10,24 +10,20 @@ on:
         type: string
       tags:
         description: |
-          Groups:
-          Eg: smoke,regression
+          Comma-separated list of tags to filter tests by.
+          Example: `smoke,regression`
+          Use this to run tests that are tagged with specific keywords.
         required: false
         default: ''
         type: string
       test_target:
         description: |
-          Class or method:
-          Eg: MyTestClass1,MyTestClass2::test_specific_method
+          Specify test classes or methods to run, separated by commas.
+          - To run multiple classes, use: `ClassName1,ClassName2`
+          - To run multiple methods, use: `ClassName::method1,ClassName::method2`
+          Example: `MyTestClass1,MyTestClass2::test_specific_method`
         required: false
         default: ''
-        type: string
-      num_nodes:
-        description: |
-          Nodes:
-          Eg: 4
-        required: false
-        default: '1'
         type: string
 
 jobs:
@@ -52,7 +48,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest-xdist  # Install pytest-xdist for parallel execution
 
     - name: Install Playwright Browsers
       run: |
@@ -71,8 +66,7 @@ jobs:
       run: |
         tags="${{ github.event.inputs.tags }}"
         test_target="${{ github.event.inputs.test_target }}"
-        num_nodes="${{ github.event.inputs.num_nodes }}"
-        
+
         # Base pytest command
         pytest_cmd="pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir"
 
@@ -86,11 +80,6 @@ jobs:
           # Replace commas with spaces to separate multiple test targets
           test_targets=$(echo "$test_target" | sed 's/,/ /g')
           pytest_cmd="$pytest_cmd $test_targets"
-        fi
-
-        # Add parallel execution if specified
-        if [ -n "$num_nodes" ]; then
-          pytest_cmd="$pytest_cmd -n $num_nodes"
         fi
 
         # Execute the pytest command
