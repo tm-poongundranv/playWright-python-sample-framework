@@ -19,7 +19,7 @@ class TestGoogle2:
     @allure.severity(allure.severity_level.MINOR)
     @allure.label('owner', 'Automation')
     @allure.testcase("")
-    @pytest.mark.search
+    @pytest.mark.gsearch
     def test_yahoo2(self, page):
         page.goto('https://in.search.yahoo.com/')
         assert page.title() == 'Yahoo Search - Web Search'

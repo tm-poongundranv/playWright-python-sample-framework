@@ -15,7 +15,7 @@ class TestPlaygroundApp:
     @allure.severity(allure.severity_level.MINOR)
     @allure.label('owner', 'Automation')
     @allure.testcase("TC001")
-    @pytest.mark.search
+    @pytest.mark.smoke
     def test_filter_product(self, page:Page):
 
         # Go to the Application
@@ -26,7 +26,8 @@ class TestPlaygroundApp:
     @allure.severity(allure.severity_level.MINOR)
     @allure.label('owner', 'Automation')
     @allure.testcase("TC002")
-    @pytest.mark.search
+    @pytest.mark.smoke
+    @pytest.mark.regression
     def test_component_page(self,page: Page):
 
         # Go to the main page
