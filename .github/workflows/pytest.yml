@@ -40,7 +40,7 @@ jobs:
 
     - name: Clean up previous Allure and HTML reports
       run: |
-        rm -rf test/tests/artifacts/allure_report test/tests/artifacts/html/html_report.html
+        rm -rf test/tests/artifacts/allure_report test/tests/artifacts/combine_allure_report test/tests/artifacts/html/html_report.html
 
     - name: Run tests
       run: |
@@ -58,7 +58,7 @@ jobs:
 
     - name: Generate Combine Allure Report
       run: |
-        allure generate test/tests/artifacts/allure_report --output test/tests/artifacts/combine_allure_report --single-file --clean
+        allure generate test/tests/artifacts/allure_report --output test/tests/artifacts/combine_allure_report --single-file
 
     - name: Upload Combine Allure Report
       uses: actions/upload-artifact@v3
