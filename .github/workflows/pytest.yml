@@ -33,6 +33,13 @@ jobs:
       run: |
         playwright install
 
+    - name: Install Allure Commandline
+      run: |
+        wget -q https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.13.9/allure-commandline-2.13.9.tgz
+        tar -xzf allure-commandline-2.13.9.tgz
+        sudo mv allure-2.13.9 /usr/local/bin/allure
+        sudo ln -s /usr/local/bin/allure/bin/allure /usr/local/bin/allure
+
     - name: Clean up previous Allure and HTML reports
       run: |
         rm -rf test/tests/artifacts/allure_report test/tests/artifacts/html/html_report.html
