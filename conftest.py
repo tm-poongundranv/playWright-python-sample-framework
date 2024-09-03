@@ -24,12 +24,22 @@ def browser():
         browser.close()
 
 
-@pytest.fixture(scope='session')
-def page(browser):
-    page = browser.new_page()
-    yield page
-    page.close()
+# @pytest.fixture(scope='session')
+# def page(browser):
+#     page = browser.new_page()
+#     yield page
+#     page.close()
 
+@pytest.fixture(scope='function')
+def page():
+    with sync_playwright() as p:
+        # Launch a new browser instance
+        browser = p.chromium.launch()
+        # Create a new page
+        page = browser.new_page()
+        yield page
+        page.close()
+        browser.close()
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_makereport(item, call):
