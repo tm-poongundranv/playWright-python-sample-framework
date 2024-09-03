@@ -56,7 +56,11 @@ jobs:
         name: allure-report
         path: test/tests/artifacts/allure_report
 
-    - name: Upload Allure Report
+    - name: Generate Combine Allure Report
+      run: |
+        allure generate test/tests/artifacts/allure_report --output test/tests/artifacts/combine_allure_report --single-file
+
+    - name: Upload Combine Allure Report
       uses: actions/upload-artifact@v3
       with:
         name: combine-allure-report
