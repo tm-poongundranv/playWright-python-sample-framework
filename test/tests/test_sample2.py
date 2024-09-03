@@ -4,7 +4,7 @@ from base_test import BaseTest
 
 
 class TestGoogle2:
-    @allure.title("")
+    @allure.title("Title")
     @allure.description("")
     @allure.severity(allure.severity_level.MINOR)
     @allure.label('owner', 'Automation')
