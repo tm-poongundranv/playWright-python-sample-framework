@@ -8,108 +8,78 @@ on:
         required: true
         default: 'main'
         type: string
-      tags:
-        description: |
-          Comma-separated list of tags to filter tests by.
-          Example: `smoke,regression`
-          Use this to run tests that are tagged with specific keywords.
-        required: false
-        default: ''
-        type: string
-      test_target:
-        description: |
-          Specify test classes or methods to run, separated by commas.
-          - To run multiple classes, use: `ClassName1,ClassName2`
-          - To run multiple methods, use: `ClassName::method1,ClassName::method2`
-          Example: `MyTestClass1,MyTestClass2::test_specific_method`
-        required: false
-        default: ''
+      nodes:
+        description: 'Number of parallel nodes to run tests'
+        required: true
+        default: '2'  # Default to 2 nodes if not specified
         type: string
 
 jobs:
-  test:
+  setup:
     runs-on: ubuntu-latest
     outputs:
       allure-report-path: ${{ steps.upload-allure-report.outputs.path }}
       combined-report-path: ${{ steps.upload-combined-report.outputs.path }}
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.inputs.branch }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest-xdist  # Ensure pytest-xdist is installed
 
-    - name: Install Playwright Browsers
-      run: |
-        npx playwright install
+      - name: Install Playwright Browsers
+        run: |
+          playwright install
 
-    - name: Install Allure Commandline
-      run: |
-        curl -sL https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz | tar xz -C /usr/local/bin
-        ln -s /usr/local/bin/allure-2.30.0/bin/allure /usr/local/bin/allure
+      - name: Install Allure Commandline
+        run: |
+          curl -sL https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.tgz | tar xz -C /usr/local/bin
+          ln -s /usr/local/bin/allure-2.30.0/bin/allure /usr/local/bin/allure
 
-    - name: Clean up previous Allure and HTML reports
-      run: |
-        rm -rf test/tests/artifacts/allure_report test/tests/artifacts/combine_allure_report test/tests/artifacts/html
+  run-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
-    - name: Run tests
-      run: |
-        tags="${{ github.event.inputs.tags }}"
-        test_target="${{ github.event.inputs.test_target }}"
+      - name: Run tests
+        run: |
+          pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n ${{ github.event.inputs.nodes }}
+        continue-on-error: true
 
-        # Base pytest command
-        pytest_cmd="pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir"
+  generate-reports:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Combined Allure Report
+        run: |
+          allure generate test/tests/artifacts/allure_report --clean --output test/tests/artifacts/combine_allure_report --single-file
+        continue-on-error: true
 
-        # Add tags if specified
-        if [ -n "$tags" ]; then
-          pytest_cmd="$pytest_cmd -m '$tags'"
-        fi
+      - name: Upload Combined Allure Report
+        id: upload-combined-report
+        uses: actions/upload-artifact@v3
+        with:
+          name: combine-allure-report
+          path: test/tests/artifacts/combine_allure_report
+        continue-on-error: true
 
-        # Add test targets if specified
-        if [ -n "$test_target" ]; then
-          # Replace commas with spaces to separate multiple test targets
-          test_targets=$(echo "$test_target" | sed 's/,/ /g')
-          pytest_cmd="$pytest_cmd $test_targets"
-        fi
-
-        # Execute the pytest command
-        eval $pytest_cmd
-      continue-on-error: true
-
-    - name: Upload Raw Allure Report
-      id: upload-allure-report
-      uses: actions/upload-artifact@v3
-      with:
-        name: allure-report
-        path: test/tests/artifacts/allure_report
-      continue-on-error: true
-
-    - name: Generate Combined Allure Report
-      run: |
-        allure generate test/tests/artifacts/allure_report --clean --output test/tests/artifacts/combine_allure_report --single-file
-      continue-on-error: true
-
-    - name: Upload Combined Allure Report
-      id: upload-combined-report
-      uses: actions/upload-artifact@v3
-      with:
-        name: combine-allure-report
-        path: test/tests/artifacts/combine_allure_report
-      continue-on-error: true
-
-    - name: Upload HTML Report
-      uses: actions/upload-artifact@v3
-      with:
-        name: html-report
-        path: test/tests/artifacts/html
-      continue-on-error: true
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-report
+          path: test/tests/artifacts/html
+        continue-on-error: true
