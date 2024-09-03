@@ -13,6 +13,11 @@ on:
         required: true
         default: '1'
         type: string
+      group:
+        description: 'Group: (e.g., smoke)'
+        required: false
+        default: ''
+        type: string
 
 jobs:
   test:
@@ -53,7 +58,11 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest -m smoke -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n ${{ github.event.inputs.node }}
+        if [ -z "${{ github.event.inputs.group }}" ]; then
+          pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n ${{ github.event.inputs.node }}
+        else
+          pytest -m ${{ github.event.inputs.group }} -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir -n ${{ github.event.inputs.node }}
+        fi
       continue-on-error: true
 
     - name: Upload Raw Allure Report
