@@ -35,10 +35,8 @@ jobs:
 
     - name: Install Allure Commandline
       run: |
-        wget -q https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.13.9/allure-commandline-2.13.9.tgz
-        tar -xzf allure-commandline-2.13.9.tgz
-        sudo mv allure-2.13.9 /usr/local/bin/allure
-        sudo ln -s /usr/local/bin/allure/bin/allure /usr/local/bin/allure
+        curl -sL https://github.com/allure-framework/allure2/releases/download/2.21.0/allure-2.21.0.tgz | tar xz -C /usr/local/bin
+        ln -s /usr/local/bin/allure-2.21.0/bin/allure /usr/local/bin/allure
 
     - name: Clean up previous Allure and HTML reports
       run: |
