@@ -1,16 +1,16 @@
 import os
 from playwright.sync_api import Page, Locator, expect
 
-class Actions:
-    def __init__(self, page: Page):
-        self.page = page
 
-    def click_on(self, locator: Locator, name: str):
+class Actions:
+    @staticmethod
+    def click_on(locator: Locator, name: str):
         locator.click()
         print(f"Clicked on {name}")
 
-    def wait_for_page_to_load(self):
-        self.page.wait_for_load_state('networkidle')
+    @staticmethod
+    def wait_for_page_to_load(page: Page):
+        page.wait_for_load_state('networkidle')
         print("Page load complete")
 
     @staticmethod
@@ -24,32 +24,30 @@ class Actions:
         print(f"Button '{button_name}' clicked")
 
 
-
-
 class Common:
-    def __init__(self, page: Page):
-        self.page = page
-        # Define any common locators or methods here
-        self.actions = Actions(self.page)
-        self.shop_menu = self.page.locator('role=link[name="Shop"]')
-        self.components_menu = self.page.locator('role=link[name="Components"]')
-        self.home_menu = self.page.locator('role=link[name="Home"]')
-        self.products_title = self.page.locator('role=heading[name="Products"]')
-        self.shop_by_brand = self.page.locator("//span[text()='Shop by Brand']")
+    base_url = 'http://localhost'
 
-    def launch_web_app(self):
-        url =('base_url', 'http://localhost')
-        self.page.goto(url)
-        print(f"Navigated to the URL: {url}")
+    @staticmethod
+    def launch_web_app(page: Page):
+        page.goto(Common.base_url)
+        print(f"Navigated to the URL: {Common.base_url}")
 
-    def open_shop_page(self):
-        self.actions.click_on(self.shop_menu, "Shop menu")
-        self.actions.wait_for_page_to_load()
-        expect(self.products_title).to_be_visible()
+    @staticmethod
+    def open_shop_page(page: Page):
+        shop_menu = page.locator('role=link[name="Shop"]')
+        products_title = page.locator('role=heading[name="Products"]')
+
+        Actions.click_on(shop_menu, "Shop menu")
+        Actions.wait_for_page_to_load(page)
+        expect(products_title).to_be_visible()
         print("Shop page with Products title should be visible")
 
-    def open_components_page(self):
-        self.actions.click_on(self.components_menu, "Components menu")
+    @staticmethod
+    def open_components_page(page: Page):
+        components_menu = page.locator('role=link[name="Components"]')
 
+        Actions.click_on(components_menu, "Components menu")
 
-
+    @staticmethod
+    def shop_by_brand_locator(page: Page) -> Locator:
+        return page.locator("//span[text()='Shop by Brand']")

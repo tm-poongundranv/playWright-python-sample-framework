@@ -1,43 +1,43 @@
-import json
 from playwright.sync_api import Page, Locator, expect
-from test.page_objects.common import Common, Actions
+from test.page_objects.common import Actions
 
-# with open('path/to/env-test.json') as f:
-#     env = json.load(f)
+
 class LoginPage:
-    def __init__(self, page: Page):
-        self.page = page
-        self.actions = Actions(self.page)
+    @staticmethod
+    def enter_user_name(page: Page, user_name: str):
+        email_field = page.locator('input[placeholder="Username"]')
+        Actions.type_text(email_field, user_name, "User name field")
 
-        self.email_field = self.page.locator('input[placeholder="Username"]')
-        self.password_field = self.page.locator('input[placeholder="Password"]')
-        self.sign_in_button = self.page.locator('text=Sign In')
+    @staticmethod
+    def enter_password(page: Page, password: str):
+        password_field = page.locator('input[placeholder="Password"]')
+        Actions.type_text(password_field, password, "Password field")
 
-        self.login_option = self.page.locator('text=Login')
-        self.email_address_field = self.page.locator("//input[@name='email']")
-        self.ecommerce_password_field = self.page.locator("//input[@name='password']")
-        self.login_button = self.page.locator("//button[text()='Login']")
-        self.profile_dropdown = self.page.locator("//*[name()='svg'][@class='text-black']")
+    @staticmethod
+    def click_sign_in_button(page: Page):
+        sign_in_button = page.locator('text=Sign In')
+        Actions.click_button(sign_in_button, "Sign In button")
 
-    def enter_user_name(self, user_name: str):
-        self.actions.wait_for_page_to_load()
-        self.actions.type_text(self.email_field, user_name, "User name field")
+    @staticmethod
+    def click_login_option(page: Page):
+        login_option = page.locator('text=Login')
+        Actions.click_button(login_option, "Login option")
 
-    def enter_password(self, password: str):
-        self.actions.type_text(self.password_field, password, "Password field")
+    @staticmethod
+    def enter_email_address(page: Page, email_address: str):
+        email_address_field = page.locator("//input[@name='email']")
+        Actions.type_text(email_address_field, email_address, "Email address field")
 
-    def click_sign_in_button(self):
-        self.actions.click_button(self.sign_in_button, "Sign In button")
+    @staticmethod
+    def enter_ecommerce_password(page: Page, password: str):
+        ecommerce_password_field = page.locator("//input[@name='password']")
+        Actions.type_text(ecommerce_password_field, password, "Password field")
 
-    def click_login_option(self):
-        self.actions.click_button(self.login_option, "Login option")
+    @staticmethod
+    def click_login_button(page: Page):
+        login_button = page.locator("//button[text()='Login']")
+        Actions.click_button(login_button, "Login button")
 
-    def enter_email_address(self, email_address: str):
-        self.actions.wait_for_page_to_load()
-        self.actions.type_text(self.email_address_field, email_address, "Email address field")
-
-    def enter_ecommerce_password(self, password: str):
-        self.actions.type_text(self.ecommerce_password_field, password, "Password field")
-
-    def click_login_button(self):
-        self.actions.click_button(self.login_button, "Login button")
+    @staticmethod
+    def profile_dropdown(page: Page) -> Locator:
+        return page.locator("//*[name()='svg'][@class='text-black']")
