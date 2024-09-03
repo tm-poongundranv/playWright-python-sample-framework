@@ -10,18 +10,15 @@ on:
         type: string
       tags:
         description: |
-          Comma-separated list of tags to filter tests by.
-          Example: `smoke,regression`
-          Use this to run tests that are tagged with specific keywords.
+          Groups:
+          Eg: `smoke,regression`
         required: false
         default: ''
         type: string
       test_target:
         description: |
-          Specify the test class or method to run.
-          - To run all tests in a class, use: `ClassName`
-          - To run a specific method within a class, use: `ClassName::method_name`
-          Example: `MyTestClass` or `MyTestClass::test_specific_method`
+          Class or method:
+          Eg: `TestClass1,TestClass2::test_specific_method`
         required: false
         default: ''
         type: string
@@ -66,7 +63,7 @@ jobs:
       run: |
         tags="${{ github.event.inputs.tags }}"
         test_target="${{ github.event.inputs.test_target }}"
-        
+
         # Base pytest command
         pytest_cmd="pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir"
 
@@ -75,9 +72,11 @@ jobs:
           pytest_cmd="$pytest_cmd -m '$tags'"
         fi
 
-        # Add test target if specified
+        # Add test targets if specified
         if [ -n "$test_target" ]; then
-          pytest_cmd="$pytest_cmd $test_target"
+          # Replace commas with spaces to separate multiple test targets
+          test_targets=$(echo "$test_target" | sed 's/,/ /g')
+          pytest_cmd="$pytest_cmd $test_targets"
         fi
 
         # Execute the pytest command
