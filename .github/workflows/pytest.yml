@@ -44,11 +44,11 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest
+        pytest --alluredir=test/tests/artifacts/allure_report --clean-alluredir
 
-    - name: Generate Allure Report
-      run: |
-        allure generate test/tests/artifacts/allure_report --clean -o test/tests/artifacts/allure_report
+#    - name: Generate Allure Report
+#      run: |
+#        allure generate test/tests/artifacts/allure_report --clean -o test/tests/artifacts/allure_report
 
     - name: Upload Allure Report
       uses: actions/upload-artifact@v3
