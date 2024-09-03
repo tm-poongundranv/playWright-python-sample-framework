@@ -30,4 +30,4 @@ class TestPlaygroundApp:
     def test_component_page(self,page: Page):
 
         # Go to the main page
-        page.goto('https://www.playground.testingmavens.tools/')
+        page.goto('https://www.playground.testingmavens.tls/')

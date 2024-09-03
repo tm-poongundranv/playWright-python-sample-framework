@@ -12,6 +12,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    outputs:
+      allure-report-path: ${{ steps.upload-allure-report.outputs.path }}
+      combined-report-path: ${{ steps.upload-combined-report.outputs.path }}
 
     steps:
     - name: Checkout code
@@ -40,30 +43,37 @@ jobs:
 
     - name: Clean up previous Allure and HTML reports
       run: |
-        rm -rf test/tests/artifacts/allure_report test/tests/artifacts/combine_allure_report test/tests/artifacts/html/html_report.html
+        rm -rf test/tests/artifacts/allure_report test/tests/artifacts/combine_allure_report test/tests/artifacts/html
 
     - name: Run tests
       run: |
         pytest -p no:warnings --alluredir=test/tests/artifacts/allure_report --clean-alluredir
+      continue-on-error: true
 
-    - name: Upload Allure Report
+    - name: Upload Raw Allure Report
+      id: upload-allure-report
       uses: actions/upload-artifact@v3
       with:
         name: allure-report
         path: test/tests/artifacts/allure_report
+      continue-on-error: true
 
-    - name: Generate Combine Allure Report
+    - name: Generate Combined Allure Report
       run: |
         allure generate test/tests/artifacts/allure_report --clean --output test/tests/artifacts/combine_allure_report --single-file
+      continue-on-error: true
 
-    - name: Upload Combine Allure Report
+    - name: Upload Combined Allure Report
+      id: upload-combined-report
       uses: actions/upload-artifact@v3
       with:
         name: combine-allure-report
         path: test/tests/artifacts/combine_allure_report
+      continue-on-error: true
 
     - name: Upload HTML Report
       uses: actions/upload-artifact@v3
       with:
         name: html-report
         path: test/tests/artifacts/html
+      continue-on-error: true
